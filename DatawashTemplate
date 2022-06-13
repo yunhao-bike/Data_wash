@@ -1,0 +1,42 @@
+## 数据预处理
+## 读取数据、dataframe描述、缺失值处理、重复值处理、异常值处理
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+#1 Read Data
+#1.1 Read Excel
+a = pd.read_excel('etf涨幅.xlsx')
+
+#2 Get info
+#print(a.info())
+#print(a.describe())
+
+#3 缺失值填充
+#3.1 fillna with z number
+b=a
+b=b.fillna(0)
+
+
+#3.2 fillna with mean
+c=a
+c[2016]=c[2016].fillna(c[2016].mean())
+c[2017]=c[2017].fillna(c[2017].mean())
+c[2018]=   c[2018].fillna(c[2018].mean())
+
+#3.3 fillna with previous num
+#data['column_name'].fillna(method='pad') #使用前一个数值替代空值或者NA，就是NA前面最近的非空数值替换
+#data['column_name'].fillna(method='bfill',limit=1)　#使用后一个数值替代空值或者NA，limit=1就是限制如果几个连续的空值，只能最近的一个空值可以被填充。
+
+#4 重复值处理
+c.drop_duplicates(inplace=True)
+c.reset_index(inplace=False)
+print(c)
+
+#5 异常值处理  
+# 2016列大于5的值等于5
+print(c[2016])
+plt.scatter(c.index.values,c[2016].values,)
+c[2016][c[2016]>5]=5
+print(c[2016])
