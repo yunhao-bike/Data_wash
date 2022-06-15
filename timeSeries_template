@@ -1,6 +1,8 @@
 ### 展开Question
 ### 市场状态分类
 
+### Dataset is in this folder. the file name is wanke.csv
+
 import numpy as np
 import pandas as pd
 
