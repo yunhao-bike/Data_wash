@@ -1,0 +1,44 @@
+### 展开Question
+### 市场状态分类
+
+import numpy as np
+import pandas as pd
+
+# 设定滞后时间
+n = 10
+# 读取csv
+dfraw=pd.read_csv("wanke.csv")
+
+# Set trade date as index and 缩小样本
+dfraw.set_index('trade_date',inplace=True)
+dfraw1 = dfraw.iloc[0:100,:]
+
+# calculate return and so on 
+# 选择近10年 每天股票近6个月的涨幅，上涨天数，以及方差
+df= pd.DataFrame(data=dfraw1['close'])
+df = df.rename(columns={'close':'price'}) # rename column name
+df['ret1']=np.empty((len(df),1)) # Create empty series
+df['ret']=np.empty((len(df),1))
+df['up_days']=np.empty((len(df),1))
+df['std']=np.empty((len(df),1))
+
+# Use diff method to Get Return 
+df['ret1'] = df['price'].diff(periods = 1)/df['price']
+df['ret'] = df['price'].diff(periods = n-1)/df['price']
+
+# Get up_days and std using numpy
+for i in range(len(df)-80):
+    if i<9:
+       df['up_days'][i] = None
+       df['std'][i] = None
+    else:
+        temp = df['ret1'][i-(n-1):i+1].values
+        updays = sum(x>0 for x in temp)
+        df.iloc[i,3] = updays
+        arr_std = np.std(temp)
+        df.iloc[i,4] = arr_std
+
+
+df1 = df[['ret1','ret','up_days','std']]
+df1 = df1.dropna() #Drop NaN
+print(df1)
